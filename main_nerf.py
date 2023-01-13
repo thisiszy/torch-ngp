@@ -2,7 +2,6 @@ import torch
 import argparse
 
 from nerf.provider import NeRFDataset
-from nerf.gui import NeRFGUI
 from nerf.utils import *
 
 from functools import partial
@@ -114,16 +113,14 @@ if __name__ == '__main__':
         trainer = Trainer('ngp', opt, model, device=device, workspace=opt.workspace, criterion=criterion, fp16=opt.fp16, metrics=metrics, use_checkpoint=opt.ckpt)
 
         if opt.gui:
-            gui = NeRFGUI(opt, trainer)
-            gui.render()
-        
+            pass
         else:
             test_loader = NeRFDataset(opt, device=device, type='test').dataloader()
 
             if test_loader.has_gt:
                 trainer.evaluate(test_loader) # blender has gt, so evaluate it.
     
-            trainer.test(test_loader, write_video=True) # test and save video
+            trainer.test(test_loader, write_video=False) # test and save video
             
             trainer.save_mesh(resolution=256, threshold=10)
     
@@ -140,9 +137,7 @@ if __name__ == '__main__':
         trainer = Trainer('ngp', opt, model, device=device, workspace=opt.workspace, optimizer=optimizer, criterion=criterion, ema_decay=0.95, fp16=opt.fp16, lr_scheduler=scheduler, scheduler_update_every_step=True, metrics=metrics, use_checkpoint=opt.ckpt, eval_interval=50)
 
         if opt.gui:
-            gui = NeRFGUI(opt, trainer, train_loader)
-            gui.render()
-        
+            pass
         else:
             valid_loader = NeRFDataset(opt, device=device, type='val', downscale=1).dataloader()
 
@@ -155,6 +150,6 @@ if __name__ == '__main__':
             if test_loader.has_gt:
                 trainer.evaluate(test_loader) # blender has gt, so evaluate it.
             
-            trainer.test(test_loader, write_video=True) # test and save video
+            trainer.test(test_loader, write_video=False) # test and save video
             
             trainer.save_mesh(resolution=256, threshold=10)
