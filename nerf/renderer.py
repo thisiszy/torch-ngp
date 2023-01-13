@@ -138,7 +138,10 @@ class NeRFRenderer(nn.Module):
         aabb = self.aabb_train if self.training else self.aabb_infer
 
         # sample steps
-        nears, fars = raymarching.near_far_from_aabb(rays_o, rays_d, aabb, self.min_near)
+        with torch.no_grad():
+            nears, fars = raymarching.near_far_from_aabb(rays_o, rays_d, aabb, self.min_near)
+        # nears = torch.tensor(nears, requires_grad=False)
+        # nears = torch.tensor(nears, requires_grad=False)
         nears.unsqueeze_(-1)
         fars.unsqueeze_(-1)
 
@@ -541,6 +544,8 @@ class NeRFRenderer(nn.Module):
     def render(self, rays_o, rays_d, staged=False, max_ray_batch=4096, **kwargs):
         # rays_o, rays_d: [B, N, 3], assumes B == 1
         # return: pred_rgb: [B, N, 3]
+        if len(rays_o.shape) > 3:
+            rays_o, rays_d = rays_o
 
         if self.cuda_ray:
             _run = self.run_cuda
