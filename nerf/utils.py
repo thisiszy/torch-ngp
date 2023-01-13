@@ -464,11 +464,12 @@ class Trainer(object):
             bg_color = torch.rand_like(images[..., :3]) # [N, 3], pixel-wise random.
 
         if C == 4:
-            gt_rgb = images[..., :3] * images[..., 3:] + bg_color * (1 - images[..., 3:])
+            gt_rgb = images[..., :3] * images[..., 3:] + (1 - images[..., 3:])
         else:
             gt_rgb = images
 
         outputs = self.model.render(rays_o, rays_d, staged=False, bg_color=bg_color, perturb=True, force_all_rays=False if self.opt.patch_size == 1 else True, **vars(self.opt))
+        breakpoint()
         # outputs = self.model.render(rays_o, rays_d, staged=False, bg_color=bg_color, perturb=True, force_all_rays=True, **vars(self.opt))
     
         pred_rgb = outputs['image']
@@ -537,7 +538,7 @@ class Trainer(object):
         # eval with fixed background color
         bg_color = 1
         if C == 4:
-            gt_rgb = images[..., :3] * images[..., 3:] + bg_color * (1 - images[..., 3:])
+            gt_rgb = images[..., :3] * images[..., 3:] + (1 - images[..., 3:])
         else:
             gt_rgb = images
         
@@ -898,7 +899,7 @@ class Trainer(object):
 
             for data in loader:    
                 self.local_step += 1
-
+                breakpoint()
                 with torch.cuda.amp.autocast(enabled=self.fp16):
                     preds, preds_depth, truths, loss = self.eval_step(data)
 

@@ -236,7 +236,7 @@ class NeRFRenderer(nn.Module):
         elif bg_color is None:
             bg_color = 1
             
-        image = image + (1 - weights_sum).unsqueeze(-1) * bg_color
+        image = image + (1 - weights_sum).unsqueeze(-1)
 
         image = image.view(*prefix, 3)
         depth = depth.view(*prefix)
@@ -302,7 +302,7 @@ class NeRFRenderer(nn.Module):
                 images = []
                 for k in range(K):
                     weights_sum, depth, image = raymarching.composite_rays_train(sigmas[k], rgbs[k], deltas, rays, T_thresh)
-                    image = image + (1 - weights_sum).unsqueeze(-1) * bg_color
+                    image = image + (1 - weights_sum).unsqueeze(-1)
                     depth = torch.clamp(depth - nears, min=0) / (fars - nears)
                     images.append(image.view(*prefix, 3))
                     depths.append(depth.view(*prefix))
@@ -313,7 +313,7 @@ class NeRFRenderer(nn.Module):
             else:
 
                 weights_sum, depth, image = raymarching.composite_rays_train(sigmas, rgbs, deltas, rays, T_thresh)
-                image = image + (1 - weights_sum).unsqueeze(-1) * bg_color
+                image = image + (1 - weights_sum).unsqueeze(-1)
                 depth = torch.clamp(depth - nears, min=0) / (fars - nears)
                 image = image.view(*prefix, 3)
                 depth = depth.view(*prefix)
@@ -366,7 +366,7 @@ class NeRFRenderer(nn.Module):
 
                 step += n_step
 
-            image = image + (1 - weights_sum).unsqueeze(-1) * bg_color
+            image = image + (1 - weights_sum).unsqueeze(-1)
             depth = torch.clamp(depth - nears, min=0) / (fars - nears)
             image = image.view(*prefix, 3)
             depth = depth.view(*prefix)
