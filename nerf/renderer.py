@@ -122,7 +122,7 @@ class NeRFRenderer(nn.Module):
         self.mean_count = 0
         self.local_step = 0
 
-    def run(self, rays_o, rays_d, num_steps=128, upsample_steps=128, bg_color=None, perturb=False, **kwargs):
+    def run(self, rays_o, rays_d, num_steps=1024, upsample_steps=1024, bg_color=None, perturb=False, **kwargs):
         # rays_o, rays_d: [B, N, 3], assumes B == 1
         # bg_color: [3] in range [0, 1]
         # return: image: [B, N, 3], depth: [B, N]
@@ -135,8 +135,8 @@ class NeRFRenderer(nn.Module):
         device = rays_o.device
 
         # choose aabb
-        aabb = self.aabb_train if self.training else self.aabb_infer
-
+        # aabb = self.aabb_train if self.training else self.aabb_infer
+        aabb = self.aabb_infer
         # sample steps
         with torch.no_grad():
             nears, fars = raymarching.near_far_from_aabb(rays_o, rays_d, aabb, self.min_near)
