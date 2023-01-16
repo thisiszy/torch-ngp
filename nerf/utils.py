@@ -402,6 +402,9 @@ class Trainer(object):
             else: # path to ckpt
                 self.log(f"[INFO] Loading {self.use_checkpoint} ...")
                 self.load_checkpoint(self.use_checkpoint)
+        else:
+            self.log(f"[INFO] Loading {self.use_checkpoint} ...")
+            self.load_checkpoint(self.use_checkpoint)
         
         # clip loss prepare
         if opt.rand_pose >= 0: # =0 means only using CLIP loss, >0 means a hybrid mode.
